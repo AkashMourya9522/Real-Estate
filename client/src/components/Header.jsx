@@ -33,7 +33,7 @@ export default function Header() {
             </li>
           </Link>
           <Link to={"sign-in"}>
-            <li className="hidden sm:inline hover:underline hover:cursor-pointer">
+            <li className="sm:inline hover:underline hover:cursor-pointer">
               Sign In
             </li>
           </Link>
