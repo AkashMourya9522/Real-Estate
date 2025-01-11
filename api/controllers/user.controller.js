@@ -1,5 +1,5 @@
 export const test = (req,res)=>{
     res.json({
-        msg:"Hey"
+        msg:"The test works"
     })
 }
