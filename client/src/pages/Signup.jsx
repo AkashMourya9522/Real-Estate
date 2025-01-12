@@ -76,7 +76,7 @@ function Signup() {
       </form>
       <div className="flex gap-3 mt-5">
         <p>Have an account?</p>
-        <Link to={"/"}>
+        <Link to={"/sign-in"}>
           <span className="text-blue-500 hover:underline">Signin</span>
         </Link>
       </div>

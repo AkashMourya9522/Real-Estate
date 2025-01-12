@@ -36,13 +36,4 @@ export const signin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-  // if(!dbRes){
-  //     alert("User not found Sign Up first")
-  // }else{
-  //     const hashedPassword = bcrypt.hashSync(password,10)
-  //     if(password===hashedPassword){
-
-  //     }
-  // }
 };
