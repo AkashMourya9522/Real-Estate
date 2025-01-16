@@ -31,7 +31,6 @@ function Signup() {
       setLoading(false);
       setError(err.response.data.errorMessage);
       toast.error(err.response.data.errorMessage)
-      console.log(err);
       return;
     }
   }
@@ -80,7 +79,7 @@ function Signup() {
           <span className="text-blue-500 hover:underline">Signin</span>
         </Link>
       </div>
-      <p className="text-red-600"> {error ? error : ""} </p>
+      {error ? <p className="text-red-600"> {error} </p>  : ""}
     </div>
   );
 }
