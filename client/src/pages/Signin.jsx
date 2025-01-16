@@ -2,15 +2,17 @@ import axios from 'axios'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useDispatch,useSelector } from 'react-redux'
+import { signInFailure,signInStart,signInSuccess } from '../redux/user/userSlice'
 
 
 
 function Signin() {
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
-  const [error,setError] = useState(null)
-  const [loading,setLoading] = useState(false)
+ const {error,loading} = useSelector(state=>state.user)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   async function handleOnSubmit(e){
     e.preventDefault()
@@ -18,17 +20,18 @@ function Signin() {
       if(username==="" || password===""){
         return toast.error("Please Fill in the Details")
       }
-      setLoading(true)
+      dispatch(signInStart())
       const response = await axios.post('http://localhost:3000/api/auth/signin',{username,password},{withCredentials:true})
-      console.log(response);
-      
-      setLoading(false)
+      if(response.data.success===false){
+        dispatch(signInFailure(response.data.message))
+        return
+      }
+      dispatch(signInSuccess(response.data))
       toast.success("Sign In Successful")
       navigate('/')
     } catch (error) {
       toast.error(error.response.data.errorMessage);
-      setLoading(false)
-      setError(error.response.data.errorMessage)
+      dispatch(signInFailure(error.response.data.errorMessage))
     }    
   }
 
