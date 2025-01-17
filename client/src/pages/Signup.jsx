@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import OAuth from "../components/OAuth";
 
 
 function Signup() {
@@ -69,9 +70,7 @@ function Signup() {
         >
           {loading ? "Loading" : "Sign up"}
         </button>
-        <button className="bg-slate-500 text-white font-semibold p-3 rounded-lg hover:opacity-95">
-          CONTINUE WITH GOOGLE
-        </button>
+        <OAuth/>
       </form>
       <div className="flex gap-3 mt-5">
         <p>Have an account?</p>

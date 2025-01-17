@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useDispatch,useSelector } from 'react-redux'
 import { signInFailure,signInStart,signInSuccess } from '../redux/user/userSlice'
+import OAuth from '../components/OAuth'
 
 
 
@@ -42,7 +43,7 @@ function Signin() {
       <input type="text" placeholder='Username' id='username' className='border-2 p-3 rounded-lg' onChange={(e)=>setUsername(e.target.value)} />
       <input type="password" placeholder='Password' id='password' className='border-2 p-3 rounded-lg ' onChange={(e)=>setPassword(e.target.value)} />
       <button className='bg-red-500 p-3 rounded-lg text-white font-semibold' disabled={loading} > {loading ? 'Loading...' : 'Sign In'} </button>
-      <button className='bg-slate-500 p-3 rounded-lg text-white font-semibold ' >Continue with Google</button>
+      <OAuth/>
       </form>
       <div className='flex gap-3 mt-5' >
         <span>Dont have an account?</span>
