@@ -6,6 +6,7 @@ import Signout from "./pages/Signup";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
 import Header from "./components/Header";
+import Protected from "./pages/Protected";
 
 function App() {
   return (
@@ -15,7 +16,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<Signout />} />
+        <Route element={<Protected/>} >
         <Route path="/profile" element={<Profile />} />
+        </Route>
+        
         <Route path="/about" element={<About />} />
       </Routes>
     </BrowserRouter>
