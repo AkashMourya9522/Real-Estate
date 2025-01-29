@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import {useNavigate} from 'react-router-dom'
+import { toast } from 'react-toastify'
 import axios from 'axios'
 
 function Profile() {
@@ -8,6 +9,9 @@ function Profile() {
   const navigate = useNavigate()
   const inputRef = useRef(null)
   const [file,setFile] = useState(undefined)
+  const [formData,setFormData] = useState({})
+  console.log(formData);
+  
   function handleSignout(){
     localStorage.removeItem('persist:root')
     navigate('/sign-in')
@@ -21,14 +25,20 @@ function Profile() {
     
     console.log(e.target.files[0]);
     
+    if(!e.target.files[0]) return ;
     
     
     
     try{
       const cloudinaryRes =  await axios.post("https://api.cloudinary.com/v1_1/drjsiga6e/image/upload",data)
+      
+      setFormData({...formData,photo:cloudinaryRes.data.secure_url})
       console.log(cloudinaryRes.data.secure_url);
+      console.log(formData);
+      
     }catch(err){
       console.log("There is an issue i guess")
+      return toast.error("There is an issue with the cloudinary service!")
     }
       
   
@@ -48,10 +58,10 @@ function Profile() {
     
     <form className='flex flex-col gap-5'>
       <input type="file" onChange={handleFileUpload} ref={inputRef} accept='image/*' hidden />
-    <img src={photo} onClick={()=>{inputRef.current.click()}} className='w-20 h-20 rounded-full mx-auto object-cover cursor-pointer' alt="Profile-Image" />
-    <input type="text" placeholder='Username'  value={username} className='border-2 rounded p-3' />
-    <input type="email" placeholder='Email' value={email} className='border-2 rounded p-3' />
-    <input type="password" placeholder='Password' className='border-2 rounded p-3'  />
+    <img src={ formData.photo || photo} onClick={()=>{inputRef.current.click()}} className='w-28 h-28 rounded-full mx-auto object-cover cursor-pointer' alt="Profile-Image" />
+    <input type="text" placeholder='Username' onChange={(e)=>setFormData({...formData,username:e.target.value})}   className='border-2 rounded p-3' />
+    <input type="email" placeholder='Email' onChange={(e)=>setFormData({...formData,email:e.target.value})}  className='border-2 rounded p-3' />
+    <input type="password" placeholder='Password' onChange={(e)=>setFormData({...formData,password:e.target.value})} className='border-2 rounded p-3'  />
 
     <button className='bg-slate-500 p-3 rounded-md text-white uppercase hover:opacity-90' >Update</button>
     <button className='bg-green-500 p-3 rounded-md text-white uppercase' >Create Listing</button>
