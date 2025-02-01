@@ -11,6 +11,8 @@ export const test = (req, res) => {
 export const updateUser = async (req, res, next) => {
   console.log("this is the form data received",req.body)
   const userId = req.userId;
+  console.log('userid from diff sources are',userId,req.params.id);
+  
   if (userId != req.params.id)
     return next(errorHandler("You can update Your Own Account Only!", 401));
   if (req.body.password) {
@@ -33,3 +35,26 @@ export const updateUser = async (req, res, next) => {
   const {password,...rest} = updatedUser._doc;
   res.status(200).json(rest)
 };
+
+export const deleteUser = async (req,res,next)=>{
+  const deleteId = req.userId;
+  const id = req.params.id;
+  if(deleteId!=id){
+    return next(errorHandler("You can delete your own account only!"))
+  }
+  else{
+    try{
+      const dbRes = await User.findByIdAndDelete(deleteId)
+      res.clearCookie("access_token")
+  res.status(200).json({
+    success:true,
+    msg:"Success User has been deleted!"
+  })
+    }catch(err){
+      return next(errorHandler("There seem to be an issue with the servers"))
+    }
+    
+  }
+  
+  
+}

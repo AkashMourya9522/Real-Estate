@@ -6,7 +6,7 @@ import authRouter from './routes/auth.route.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 dotenv.config()
-
+// ISSUE WHEN THE USER LOGS IN USING THE GOOGLE O AUTH 
 mongoose.connect(process.env.MONGO)
 .then(()=>{
     console.log("Connected To Database Successfully")

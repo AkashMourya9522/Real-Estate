@@ -50,16 +50,23 @@ export const googleOAuth = async (req,res,next)=>{
   const {username,email,photoURL} = req.body;
   const user = await User.findOne({email})
   if(user){
+    console.log("user",user)
     const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
     const {password:pass,...rest} = user._doc;
-    res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest)
+    console.log('new token of the new user is with id signed',token)
+    res.cookie('access_token',token,{
+      httpOnly: true,
+      secure: true,  
+      sameSite: "None" 
+    }).status(200).json(rest)
   }else{
     const generatePassword = Math.random().toString(36).slice(-8)
     const hashedPassword = bcrypt.hashSync(generatePassword,10)
     const newUser = new User({username:username,password:hashedPassword,email:email,photo:photoURL})
-    await newUser.save()
-    const token = jwt.sign({id:newUser._id},process.env.JWT_SECRET)
-    const {password:pass,...rest} = newUser._doc;
+    const savedUser = await newUser.save()
+    const token = jwt.sign({id:savedUser._id},process.env.JWT_SECRET)
+    console.log('new token of the new user is with id signed',token)
+    const {password:pass,...rest} = savedUser._doc;
     res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest)
   }
     console.log(req.body);

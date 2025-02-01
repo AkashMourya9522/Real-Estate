@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
-import {updateUserFailure,updateUserSuccess,updateUserStart} from '../redux/user/userSlice.js'
+import {updateUserFailure,updateUserSuccess,updateUserStart,deleteUserFailure,deleteUserStart,deleteUserSuccess} from '../redux/user/userSlice.js'
 import axios from 'axios'
 
 function Profile() {
@@ -16,7 +16,7 @@ function Profile() {
   const inputRef = useRef(null)
   const [file,setFile] = useState(undefined)
   const [formData,setFormData] = useState({})
-  
+  console.log('the user id is',_id);
   function handleSignout(){
     localStorage.removeItem('persist:root')
     navigate('/sign-in')
@@ -56,19 +56,44 @@ function Profile() {
 
   async function handleFormSubmit(e){
     e.preventDefault()
+   
+    
     try {
       dispatch(updateUserStart());
       const newUser = await axios.post("http://localhost:3000/api/user/update/"+_id,formData,{
         withCredentials:true
       })
+      console.log('updated user data',newUser);
+      
       setFormData(newUser.data)
       dispatch(updateUserSuccess(newUser.data))
       toast.success("User Is Updated Successfully!")
       
     } catch (err) {
-      toast.error(error.message)
+      toast.error(err)
       dispatch(updateUserFailure(err))
     } 
+  }
+
+  async function handleDeleteUser(){
+    try {
+      dispatch(deleteUserStart())
+      const res = await axios.delete("http://localhost:3000/api/user/delete/"+_id,{
+        withCredentials:true
+      })
+      if(res.data.success==false){
+        dispatch(deleteUserFailure(res.data.errorMessage))
+        return toast.error(res.data.errorMessage)
+      }
+      else{
+        dispatch(deleteUserSuccess())
+      }
+      
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message))
+      return toast.error(error)
+    }
+    
   }
   
   return <div className='flex flex-col gap-5 p-3 max-w-lg mx-auto' >
@@ -86,7 +111,7 @@ function Profile() {
     {/* <button className='bg-green-500 p-3 rounded-md text-white uppercase' >Create Listing</button> */}
     </form>
     <div className='flex justify-between mt-3' >
-      <span className='text-red-600 cursor-pointer' >Delete Account</span>
+      <span onClick={handleDeleteUser} className='text-red-600 cursor-pointer' >Delete Account</span>
       <span className='text-red-600 cursor-pointer' onClick={handleSignout} > Sign Out </span>
     </div>
     </div>
