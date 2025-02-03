@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import {useNavigate} from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
-import {updateUserFailure,updateUserSuccess,updateUserStart,deleteUserFailure,deleteUserStart,deleteUserSuccess} from '../redux/user/userSlice.js'
+import {updateUserFailure,updateUserSuccess,updateUserStart,deleteUserFailure,deleteUserStart,deleteUserSuccess,signOutSuccess} from '../redux/user/userSlice.js'
 import axios from 'axios'
 
 function Profile() {
@@ -17,9 +17,14 @@ function Profile() {
   const [file,setFile] = useState(undefined)
   const [formData,setFormData] = useState({})
   console.log('the user id is',_id);
-  function handleSignout(){
-    localStorage.removeItem('persist:root')
-    navigate('/sign-in')
+  async function handleSignout(){
+    try {
+      const res = await axios.get("http://localhost:3000/api/auth/signout")
+      dispatch(signOutSuccess())
+    } catch (error) {
+      return
+    }
+    
   }
   async function handleFileUpload(e){
     const data = new FormData()

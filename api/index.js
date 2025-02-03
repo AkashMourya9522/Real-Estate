@@ -5,6 +5,7 @@ import userRouter from './routes/user.route.js'
 import authRouter from './routes/auth.route.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import listingRouter from './routes/listing.route.js'
 dotenv.config()
 // ISSUE WHEN THE USER LOGS IN USING THE GOOGLE O AUTH 
 mongoose.connect(process.env.MONGO)
@@ -30,6 +31,7 @@ app.listen(3000,()=>{
 
 app.use('/api/user',userRouter)
 app.use('/api/auth',authRouter)
+app.use('/api/listing',listingRouter)
 
 app.use((err,req,res,next)=>{
     
