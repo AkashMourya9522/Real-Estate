@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function () {
+    const [files,setFiles] = useState([])
+    console.log(files);
+    function handleImageUpload(){
+        if(files.length>0 && files.length<7){
+            const promises = [];
+            for(let i=0; i<files.length; i++){
+                
+            } 
+        }
+    }
+    
   return (
     <div className="p-5 ">
       <h1 className="text-3xl font-bold text-center my-5">Create Listing</h1>
-      <div className="max-w-lg gap-5 m-auto  lg:flex lg:bg-orange-500 lg:max-w-none ">
+      <div className="max-w-lg gap-5 m-auto  lg:fle lg:max-w-lg ">
         <div className="m-auto flex flex-col  gap-5  p-3 ">
           <input
             className="p-3 border-2 rounded-lg"
@@ -83,8 +94,8 @@ export default function () {
             <span>The first image will be the cover (max 6)</span>
           </div>
           <div className="border-2 p-5 rounded-lg">
-            <input type="file" accept="image/*" multiple />
-            <button className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md" >Upload</button>
+            <input type="file" accept="image/*" onChange={(e)=>{setFiles(e.target.files)}} multiple />
+            <button onClick={handleImageUpload} className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md" >Upload</button>
           </div>
           <button className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
             Create Listing
