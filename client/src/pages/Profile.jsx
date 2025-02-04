@@ -113,7 +113,7 @@ function Profile() {
     <input type="password" placeholder='Password'  value={formData.password} onChange={(e)=>setFormData({...formData,password:e.target.value})} className='border-2 rounded p-3'  />
 
     <button disabled= {loading} className='bg-slate-500 p-3 rounded-md text-white uppercase hover:opacity-90' > {loading ? 'Loading' : 'Update'} </button>
-    {/* <button className='bg-green-500 p-3 rounded-md text-white uppercase' >Create Listing</button> */}
+    <button onClick={()=>{navigate('/create-listing')}} type='button' className='bg-green-500 p-3 rounded-md text-white uppercase' >Create Listing</button>
     </form>
     <div className='flex justify-between mt-3' >
       <span onClick={handleDeleteUser} className='text-red-600 cursor-pointer' >Delete Account</span>
