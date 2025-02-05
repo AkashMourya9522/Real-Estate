@@ -1,21 +1,46 @@
 import React, { useState } from "react";
+import axios from 'axios'
 
 export default function () {
     const [files,setFiles] = useState([])
+    const [loading,setLoading] = useState(false)
+    const [formData,setFormData] = useState({
+      imageURLs: []
+    })
     console.log(files);
-    function handleImageUpload(){
+    console.log(formData);
+    
+    async function handleImageUpload(){
+      
         if(files.length>0 && files.length<7){
-            const promises = [];
-            for(let i=0; i<files.length; i++){
-                
-            } 
+          setLoading(true)
+            const promises = [...files].map(async (file)=>{
+              const imageData = new FormData();
+              imageData.append("file",file)
+              imageData.append("upload_preset","Real_Estate")
+              imageData.append("cloud_name","drjsiga6e")
+              return axios.post("https://api.cloudinary.com/v1_1/drjsiga6e/image/upload",imageData)
+              .then((res)=>res.data.secure_url)
+            })
+
+            const allURLs = await Promise.all(promises)
+            setLoading(false)
+            setFormData((prev)=>({...prev,imageURLs:[...prev.imageURLs,...allURLs]}))
         }
+        else{
+          setLoading(false)
+          return 
+        }
+    }
+
+    function handleImageDelete(indexToDelete){
+      setFormData((prev)=>({...prev,imageURLs:prev.imageURLs.filter((_,i)=>i!=indexToDelete)}))
     }
     
   return (
     <div className="p-5 ">
       <h1 className="text-3xl font-bold text-center my-5">Create Listing</h1>
-      <div className="max-w-lg gap-5 m-auto  lg:fle lg:max-w-lg ">
+      <div className=" flex flex-col  gap-5 m-auto lg:flex-row   ">
         <div className="m-auto flex flex-col  gap-5  p-3 ">
           <input
             className="p-3 border-2 rounded-lg"
@@ -95,11 +120,22 @@ export default function () {
           </div>
           <div className="border-2 p-5 rounded-lg">
             <input type="file" accept="image/*" onChange={(e)=>{setFiles(e.target.files)}} multiple />
-            <button onClick={handleImageUpload} className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md" >Upload</button>
+            <button onClick={handleImageUpload} className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md" > {loading ? 'Uploading.....' : 'Upload'} </button>
           </div>
           <button className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
             Create Listing
           </button>
+          <div className="" >
+          {
+            formData.imageURLs.map((imageURL,i)=> <div id={i} className="flex justify-between" >
+              <img id={i} className="w-20 h-20 rounded-lg object-contain" key={Math.random()} src={imageURL} />
+              <button onClick={()=>{handleImageDelete(i)}} className="text-red-600" >Delete</button>
+
+            </div> 
+            )
+          }
+          </div>
+          
         </div>
       </div>
     </div>
