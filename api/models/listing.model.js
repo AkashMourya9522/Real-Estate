@@ -25,6 +25,10 @@ const listingSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    beds:{
+        type:Boolean,
+        required:true
+    },
     furnished:{
         type:Boolean,
         required:true
@@ -41,7 +45,7 @@ const listingSchema = new mongoose.Schema({
         type:Boolean,
         required:true
     },
-    photo:{
+    imageURLs:{
         type:Array,
         required:true
     },
