@@ -1,15 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
+import {toast} from 'react-toastify'
+import {useSelector} from 'react-redux'
+import {useNavigate} from 'react-router-dom'
 
 export default function () {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error,setError] = useState(false)
+  const [imageUploadError,setImageUploadError] = useState(false)
+  const user = useSelector(state=>state.user.currentUser)
+  const navigate = useNavigate()
+  
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     address: "",
     regularPrice: 100,
-    discountPrice: 50,
+    discountPrice: 0,
     bathrooms: 1,
     furnished: true,
     parking: true,
@@ -22,7 +30,14 @@ export default function () {
   console.log(formData);
 
   async function handleImageUpload() {
+    if(files.length+ formData.imageURLs.length <1){
+      return setImageUploadError("Select Atleast One Image For Your Property")
+    }
+    if(files.length+ formData.imageURLs.length>=7 ){
+      return setImageUploadError("Number of Images can't exceed 6")
+    }
     if (files.length > 0 && files.length < 7) {
+      setImageUploadError(false)
       setLoading(true);
       const promises = [...files].map(async (file) => {
         const imageData = new FormData();
@@ -34,7 +49,10 @@ export default function () {
             "https://api.cloudinary.com/v1_1/drjsiga6e/image/upload",
             imageData
           )
-          .then((res) => res.data.secure_url);
+          .then((res) => res.data.secure_url)
+          .catch((error)=>{
+            setImageUploadError("There is an issue with the Image Upload")
+          })
       });
 
       const allURLs = await Promise.all(promises);
@@ -62,9 +80,50 @@ export default function () {
     setFormData((prev)=>({...prev,type:e.target.id}))
   }
 
+  async function handleCreateListing(){
+    setImageUploadError(false)
+    setError(false)
+    if (
+      !formData.name ||
+      !formData.description ||
+      !formData.address ||
+      !formData.regularPrice ||
+      !formData.bathrooms ||
+      !formData.beds ||
+      formData.imageURLs.length === 0
+    ) {
+      toast.error("Please fill in all required fields and upload at least one image.");
+      return;
+    }
+    try {
+      if(+formData.discountPrice>=+formData.regularPrice) return setError("Discount Is Greater Than/Equal To Price")
+      setLoading(true)
+      const res = await axios.post('http://localhost:3000/api/listing/create',{...formData,userRef:user._id},{
+        withCredentials:true
+      })
+      console.log(res.data);
+      
+      if(res.data.success ===false){
+        toast.error(res.data.errorMessage)
+      setError(res.data.errorMessage)
+      }else{
+        toast.success(res.data.name)
+        navigate(`/listing/${res.data.data.userRef}`)
+      }
+      setLoading(false)
+    } catch (err) {
+      setLoading(false)
+      setError(err)
+      toast.error(err)
+    }
+
+    
+    
+  }
+
   return (
     <div className="p-5 ">
-      <h1 className="text-3xl font-bold text-center my-5">Create Listing</h1>
+      <h1 className="text-3xl font-bold text-center my-5 uppercase"> {loading ? 'Creating..' : 'Create Listing'} </h1>
       <div className=" flex flex-col  gap-5 m-auto lg:flex-row   ">
         <div className="m-auto flex flex-col  gap-5  p-3 ">
           <input
@@ -80,6 +139,7 @@ export default function () {
             value={formData.name}
           />
           <textarea
+          required
             className="p-3 border-2 rounded-lg"
             type="text"
             placeholder="Description"
@@ -89,6 +149,7 @@ export default function () {
             value={formData.description}
           />
           <input
+          required
             className="p-3 border-2 rounded-lg"
             type="text"
             placeholder="Address"
@@ -99,35 +160,35 @@ export default function () {
           />
           <div className="flex gap-3 flex-wrap items-center ">
             <div className="flex items-center">
-              <input id="sell" checked={formData.type ==='sell'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
+              <input required id="sell" checked={formData.type ==='sell'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
               <label  className="ml-2" htmlFor="">
                 Sell
               </label>
             </div>
 
             <div className="flex items-center">
-              <input id="rent" checked={formData.type === 'rent'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
+              <input required id="rent" checked={formData.type === 'rent'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
               <label className="ml-2" htmlFor="">
                 Rent
               </label>
             </div>
 
             <div className="flex items-center">
-              <input onChange={(e)=>{setFormData((prev)=>({...prev,parking:!prev.parking}))}} checked={formData.parking} className="w-4 h-4" type="checkbox" />
+              <input required onChange={(e)=>{setFormData((prev)=>({...prev,parking:!prev.parking}))}} checked={formData.parking} className="w-4 h-4" type="checkbox" />
               <label  className="ml-2" htmlFor="">
                 Parking Spot
               </label>
             </div>
 
             <div className="flex items-center">
-              <input onChange={(e)=>{setFormData((prev)=>({...prev,furnished:!prev.furnished}))}} checked={formData.furnished} className="w-4 h-4" type="checkbox" />
+              <input required onChange={(e)=>{setFormData((prev)=>({...prev,furnished:!prev.furnished}))}} checked={formData.furnished} className="w-4 h-4" type="checkbox" />
               <label className="ml-2" htmlFor="">
                 Furnished
               </label>
             </div>
 
             <div className="flex items-center">
-              <input onChange={(e)=>{setFormData((prev)=>({...prev,offer:!prev.offer}))}} checked={formData.offer} className="w-4 h-4" type="checkbox" />
+              <input required onChange={(e)=>{setFormData((prev)=>({...prev,offer:!prev.offer}))}} checked={formData.offer} className="w-4 h-4" type="checkbox" />
               <label className="ml-2" htmlFor="">
                 Offer
               </label>
@@ -135,6 +196,7 @@ export default function () {
           </div>
           <div className="flex items-center gap-3">
             <input
+            required
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, beds: e.target.value }));
               }}
@@ -144,6 +206,7 @@ export default function () {
             />
             <label htmlFor="">Beds</label>
             <input
+            required
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, bathrooms: e.target.value }));
               }}
@@ -155,6 +218,7 @@ export default function () {
           </div>
           <div className="flex gap-3 items-center">
             <input
+            required
               value={formData.regularPrice}
               onChange={(e) => {
                 setFormData((prev) => ({
@@ -169,7 +233,7 @@ export default function () {
             <label htmlFor="">Regular Price</label>
             <span className="text-sm"> ($/month) </span>
           </div>
-          <div className=" flex gap-3 items-center">
+          {formData.offer ? <div   className={` flex gap-3 items-center`}>
             <input
               value={formData.discountPrice}
               onChange={(e) => {
@@ -180,11 +244,12 @@ export default function () {
               }}
               type="number"
               className="border-2 h-6 w-32 rounded-lg p-5"
-              min={50}
+              min={0}
             />
             <label htmlFor="">Discounted Price</label>
             <span className="text-sm">($/month)</span>
-          </div>
+          </div> : "" }
+          
         </div>
         <div className="m-auto p-3 flex flex-col gap-5  ">
           <div className="flex items-center">
@@ -193,6 +258,7 @@ export default function () {
           </div>
           <div className="border-2 p-5 rounded-lg">
             <input
+            required
               type="file"
               accept="image/*"
               onChange={(e) => {
@@ -205,15 +271,17 @@ export default function () {
               className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md"
             >
               {" "}
-              {loading ? "Uploading....." : "Upload"}{" "}
+              {loading ? "Uploading..." : "Upload"}{" "}
             </button>
+            {imageUploadError ? <p className="text-red-500" >{imageUploadError}</p> : ""}
           </div>
-          <button className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
-            Create Listing
+          <button onClick={handleCreateListing} className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
+           {loading ? 'Creating..' : 'Create Listing'}
           </button>
+          {error ? <p className="text-red-500" >{error}</p> : "" }
           <div>
             {formData.imageURLs.map((imageURL, i) => (
-              <div id={i} className="flex justify-between">
+              <div id={i} className="flex justify-between border-2 p-3 rounded-lg mb-4">
                 <img
                   id={i}
                   className="w-20 h-20 rounded-lg object-contain"
@@ -224,10 +292,9 @@ export default function () {
                   onClick={() => {
                     handleImageDelete(i);
                   }}
-                  className="text-red-600"
+                  className="text-red-600 uppercase hover:opacity-80"
                 >
-                  {" "}
-                  Delete{" "}
+                  Delete
                 </button>
               </div>
             ))}

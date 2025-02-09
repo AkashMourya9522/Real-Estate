@@ -26,7 +26,7 @@ const listingSchema = new mongoose.Schema({
         required:true
     },
     beds:{
-        type:Boolean,
+        type:Number,
         required:true
     },
     furnished:{
