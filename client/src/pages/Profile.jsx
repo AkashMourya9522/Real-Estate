@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import {
@@ -25,6 +25,7 @@ function Profile() {
   const inputRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [formData, setFormData] = useState({});
+  const [listing, setListing] = useState(null);
   console.log("the user id is", _id);
   async function handleSignout() {
     try {
@@ -99,6 +100,25 @@ function Profile() {
     }
   }
 
+  async function handleShowListings() {
+    try {
+      const listings = await axios.get(
+        "http://localhost:3000/api/user/listings/" + _id,
+        {
+          withCredentials: true,
+        }
+      );
+      if (listings.data.success == false) {
+        return toast.error(listings.data.errorMessage);
+      }
+      setListing(listings.data);
+    } catch (error) {
+      console.log(error);
+
+      toast.error("There seem to be an issue with the backend");
+    }
+  }
+
   return (
     <div className="flex flex-col gap-5 p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-medium my-3 text-center">Profile</h1>
@@ -164,7 +184,7 @@ function Profile() {
           Create Listing
         </button>
       </form>
-      <div className="flex justify-between mt-3">
+      <div className="flex justify-between my-3">
         <span
           onClick={handleDeleteUser}
           className="text-red-600 cursor-pointer"
@@ -176,6 +196,46 @@ function Profile() {
           Sign Out{" "}
         </span>
       </div>
+      <button onClick={handleShowListings} className="text-green-400 uppercase">
+        Show Listings
+      </button>
+      {listing ? (
+        <h1 className="text-3xl font-semibold my-7 text-center">
+          Your Listings
+        </h1>
+      ) : (
+        ""
+      )}
+      {listing && listing.length > 0
+        ? listing.map((list, i) => (
+            <div
+              key={listing._id}
+              className="flex justify-between my-5  border-2 rounded-lg p-3"
+            >
+              <Link
+                className="flex gap-5 items-center "
+                to={`/listings/${listing._id}`}
+              >
+                <img
+                  className="h-20 w-20 rounded-lg"
+                  src={list.imageURLs[0]}
+                  alt="Listing-Cover-Image"
+                />
+                <h1 className="text-lg font-semibold truncate hover:underline">
+                  {list.name}
+                </h1>
+              </Link>
+              <div className="flex flex-col justify-center items-center">
+                <button className="text-green-400 uppercase hover:underline">
+                  Delete
+                </button>
+                <button className="text-red-400 uppercase hover:underline">
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))
+        : ""}
     </div>
   );
 }

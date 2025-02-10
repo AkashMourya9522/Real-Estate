@@ -60,6 +60,9 @@ export const deleteUser = async (req,res,next)=>{
 export const showUserListings = async (req,res,next)=>{
   const userId = req.userId;
   const user = req.params.id;
+  console.log(userId);
+  console.log(user);
+  
   if(userId!=user){
     return next(errorHandler("Access Denied",401))
   }
