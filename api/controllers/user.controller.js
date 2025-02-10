@@ -1,6 +1,7 @@
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
+import Listing from "../models/listing.model.js";
 
 export const test = (req, res) => {
   res.json({
@@ -40,7 +41,7 @@ export const deleteUser = async (req,res,next)=>{
   const deleteId = req.userId;
   const id = req.params.id;
   if(deleteId!=id){
-    return next(errorHandler("You can delete your own account only!"))
+    return next(errorHandler("You can delete your own account only!",401))
   }
   else{
     try{
@@ -51,10 +52,22 @@ export const deleteUser = async (req,res,next)=>{
     msg:"Success User has been deleted!"
   })
     }catch(err){
-      return next(errorHandler("There seem to be an issue with the servers"))
+      return next(errorHandler("There seem to be an issue with the servers",401))
     }
-    
   }
-  
-  
+}
+
+export const showUserListings = async (req,res,next)=>{
+  const userId = req.userId;
+  const user = req.params.id;
+  if(userId!=user){
+    return next(errorHandler("Access Denied",401))
+  }
+  try {
+    const listings = await Listing.find({userRef:userId})
+    res.status(200).json(listings)
+    
+  } catch (error) {
+    return next(error)
+  }
 }
