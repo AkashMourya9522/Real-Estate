@@ -26,7 +26,7 @@ function Profile() {
   const [file, setFile] = useState(undefined);
   const [formData, setFormData] = useState({});
   const [listing, setListing] = useState(null);
-  console.log("the user id is", _id);
+
   async function handleSignout() {
     try {
       const res = await axios.get("http://localhost:3000/api/auth/signout");
@@ -116,6 +116,20 @@ function Profile() {
       console.log(error);
 
       toast.error("There seem to be an issue with the backend");
+    }
+  }
+
+  async function handleListingDelete(listingId){
+    try {
+      const response = await axios.delete(`http://localhost:3000/api/listing/delete/${listingId}`,{
+        withCredentials:true
+      })
+      if(response.data.success == true){
+        toast.success(response.data.message)
+        setListing((prev)=>prev.filter((list)=> list._id != listingId))
+      }
+    } catch (err) {
+      toast.error(err)
     }
   }
 
@@ -214,7 +228,7 @@ function Profile() {
             >
               <Link
                 className="flex gap-5 items-center "
-                to={`/listings/${listing._id}`}
+                to={`/listings/${list._id}`}
               >
                 <img
                   className="h-20 w-20 rounded-lg"
@@ -226,7 +240,7 @@ function Profile() {
                 </h1>
               </Link>
               <div className="flex flex-col justify-center items-center">
-                <button className="text-green-400 uppercase hover:underline">
+                <button onClick={()=>{handleListingDelete(list._id)}} className="text-green-400 uppercase hover:underline">
                   Delete
                 </button>
                 <button className="text-red-400 uppercase hover:underline">
