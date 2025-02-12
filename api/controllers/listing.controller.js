@@ -54,3 +54,17 @@ export const editListing = async (req, res, next) => {
     next(err);
   }
 };
+
+export const getListing = async (req,res,next)=>{
+  try {
+    if(req.params.id){
+      const listingData = await Listing.findById(req.params.id)
+      res.status(200).json(listingData)
+    }
+    else{
+      return next(errorHandler("This listing doesn't exist",404))
+    }
+  } catch (error) {
+    return next(error)
+  }
+}

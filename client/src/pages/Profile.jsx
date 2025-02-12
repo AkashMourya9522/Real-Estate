@@ -243,9 +243,12 @@ function Profile() {
                 <button onClick={()=>{handleListingDelete(list._id)}} className="text-green-400 uppercase hover:underline">
                   Delete
                 </button>
+                <Link to={'/update-listing/'+list._id} >
                 <button className="text-red-400 uppercase hover:underline">
                   Edit
                 </button>
+                </Link>
+                
               </div>
             </div>
           ))
