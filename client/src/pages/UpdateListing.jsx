@@ -15,6 +15,7 @@ export default function UpdateListing () {
   const navigate = useNavigate()
   const params = useParams()
 
+  
 
   
   const [formData, setFormData] = useState({
@@ -31,16 +32,19 @@ export default function UpdateListing () {
     beds: 1,
     imageURLs: [],
   });
+//   console.log(formData)
 
   useEffect(()=>{
     async function getListingData(){
         const listingId = params.listingId
         const Data = await axios.get(`http://localhost:3000/api/listing/getListing/${listingId}`)
-        if(Data.data.success == true){
+        if(Data.data.success == false){
+            return toast.error("There is an issue i guess")
+        }else{
             setFormData(Data.data)
         }
-        const {_id:id,...rest} = Data.data
-        setFormData(rest);
+        // const {_id:id,...rest} = Data.data
+        // setFormData(rest);
     }    
     getListingData()
 },[])
@@ -97,6 +101,8 @@ export default function UpdateListing () {
   }
 
   async function handleCreateListing(){
+    console.log('handle create listing');
+    
     setImageUploadError(false)
     setError(false)
     if (
@@ -114,10 +120,12 @@ export default function UpdateListing () {
     try {
       if(+formData.discountPrice>=+formData.regularPrice) return setError("Discount Is Greater Than/Equal To Price")
       setLoading(true)
-      const res = await axios.post('http://localhost:3000/api/listing/update'+params.listingId,{...formData,userRef:user._id},{
+    console.log('mada fkr');
+    
+      const res = await axios.post(`http://localhost:3000/api/listing/update/${params.listingId}`,{...formData,userRef:user._id},{
         withCredentials:true
-      })
-      console.log(res.data);
+      })      
+      console.log(res);
       
       if(res.data.success ===false){
         toast.error(res.data.errorMessage)
@@ -291,7 +299,7 @@ export default function UpdateListing () {
           <button onClick={handleCreateListing} className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
            {loading ? 'Creating..' : 'Update Listing'}
           </button>
-          {error ? <p className="text-red-500" >{error}</p> : "" }
+          {/* {error ? <p className="text-red-500" >{error}</p> : "" } */}
           <div>
             {formData.imageURLs.map((imageURL, i) => (
               <div id={i} className="flex justify-between border-2 p-3 rounded-lg mb-4">
