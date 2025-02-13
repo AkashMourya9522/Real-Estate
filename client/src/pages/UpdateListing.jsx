@@ -100,7 +100,7 @@ export default function UpdateListing () {
     setFormData((prev)=>({...prev,type:e.target.id}))
   }
 
-  async function handleCreateListing(){
+  async function handleUpdateListing(){
     console.log('handle create listing');
     
     setImageUploadError(false)
@@ -132,7 +132,7 @@ export default function UpdateListing () {
       setError(res.data.errorMessage)
       }else{
         toast.success(res.data.name)
-        navigate(`/listing/${res.data.data.userRef}`)
+        navigate(`/listing/${params.listingId}`)
       }
       setLoading(false)
     } catch (err) {
@@ -296,7 +296,7 @@ export default function UpdateListing () {
             </button>
             {imageUploadError ? <p className="text-red-500" >{imageUploadError}</p> : ""}
           </div>
-          <button onClick={handleCreateListing} className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
+          <button onClick={handleUpdateListing} className="bg-slate-600 rounded-lg text-white p-3 uppercase hover:opacity-85 disabled:opacity-70">
            {loading ? 'Creating..' : 'Update Listing'}
           </button>
           {/* {error ? <p className="text-red-500" >{error}</p> : "" } */}
