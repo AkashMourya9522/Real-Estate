@@ -5,7 +5,19 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { FaBath, FaBed, FaChair, FaLocationDot, FaSquareParking } from "react-icons/fa6";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  FaBath,
+  FaBed,
+  FaChair,
+  
+  FaHouseMedical,
+  FaLocationDot,
+  FaSquareParking,
+
+} from "react-icons/fa6";
+import { FaHome } from "react-icons/fa";
+import Contact from "../components/Contact";
 
 export default function Listing() {
   SwiperCore.use([Navigation]);
@@ -13,6 +25,9 @@ export default function Listing() {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const dispatch = useDispatch();
+  const [contact, setContact] = useState(false);
 
   useEffect(() => {
     async function getListingData() {
@@ -69,7 +84,12 @@ export default function Listing() {
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="  mx-auto mt-5 sm:max-w-2xl sm:mx-auto" >
+          <div className="mx-auto mt-5 sm:max-w-2xl sm:mx-auto">
+            <div className="flex items-center gap-3 text-green-600">
+              <h1 className="text-3xl font-semibold ">{listing.name} </h1>
+              <FaHome className="text-2xl" />
+            </div>
+
             <div className="flex gap-1 items-center text-lg my-3">
               <FaLocationDot className="text-green-600 " />
               <span className="font-semibold">{listing.address}</span>
@@ -114,6 +134,17 @@ export default function Listing() {
                 Furnished : {listing.furnished ? "Furnished" : "Not Furnished"}
               </li>
             </ul>
+            {currentUser && !contact && currentUser._id != listing.userRef && (
+              <button
+                onClick={() => {
+                  setContact(true);
+                }}
+                className="bg-slate-500 p-3 text-white rounded-lg w-full my-3 text-lg font-semibold hover:opacity-95"
+              >
+                Contact The LandLord
+              </button>
+            )}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       ) : (
