@@ -228,7 +228,7 @@ function Profile() {
             >
               <Link
                 className="flex gap-5 items-center "
-                to={`/listings/${list._id}`}
+                to={`/listing/${list._id}`}
               >
                 <img
                   className="h-20 w-20 rounded-lg"
