@@ -99,10 +99,7 @@ export default function Listing() {
               {listing.type == "rent" && listing.offer ? (
                 <div className="bg-red-700 text-white p-3 rounded-lg font-semibold max-w-lg my-3">
                   Rent per month is $
-                  {+listing.regularPrice -
-                    +listing.discountPrice -
-                    (+listing.discountPrice - +listing.discountPrice)}{" "}
-                  (For Rent) (After Added Discounts)
+                  {listing.regularPrice}
                 </div>
               ) : (
                 <div className="bg-green-700 text-white p-3 rounded-lg font-semibold max-w-lg my-3">
@@ -110,6 +107,13 @@ export default function Listing() {
                   Discounts)
                 </div>
               )}
+              {
+                listing.discountPrice && (
+                  <div className="bg-green-700 text-white p-3 rounded-lg font-semibold max-w-lg my-3">
+                  Max Discount is ${listing.discountPrice}
+                </div>
+                )
+              }
             </div>
             <div className="p-3 font-semibold text-lg">
               {" "}
