@@ -112,9 +112,6 @@ export const getListings = async (req,res,next)=>{
 
     return res.status(200).json(listings)
 
-
-
-
   } catch (error) {
     next(error)
   }
