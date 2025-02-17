@@ -103,12 +103,11 @@ export default function Listing() {
                 </div>
               ) : (
                 <div className="bg-green-700 text-white p-3 rounded-lg font-semibold max-w-lg my-3">
-                  Cost ${listing.regularPrice} (For Sale) (After Added
-                  Discounts)
+                  Cost ${listing.regularPrice} (For Sale)
                 </div>
               )}
               {
-                listing.discountPrice && (
+                listing.offer && (
                   <div className="bg-green-700 text-white p-3 rounded-lg font-semibold max-w-lg my-3">
                   Max Discount is ${listing.discountPrice}
                 </div>

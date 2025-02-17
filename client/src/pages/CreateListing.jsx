@@ -160,9 +160,9 @@ export default function () {
           />
           <div className="flex gap-3 flex-wrap items-center ">
             <div className="flex items-center">
-              <input required id="sell" checked={formData.type ==='sell'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
+              <input required id="sale" checked={formData.type ==='sale'} onChange={(e)=>{handleSellRent(e)}}  className="w-4 h-4" type="checkbox" />
               <label  className="ml-2" htmlFor="">
-                Sell
+                Sale
               </label>
             </div>
 
