@@ -51,7 +51,7 @@ function Signin() {
         <span className='text-blue-400 hover:underline'  >Sign Up</span>
         </Link>
       </div>
-      {error ? <p className='mt-5 text-red-500' >{error}</p> : ""}
+      {/* {error ? <p className='mt-5 text-red-500' >{error}</p> : ""} */}
     </div>
   )
 }
