@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { useDispatch,useSelector } from 'react-redux'
 import { signInFailure,signInStart,signInSuccess } from '../redux/user/userSlice'
 import OAuth from '../components/OAuth'
+import { useEffect } from 'react'
 
 
 
@@ -15,6 +16,10 @@ function Signin() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(signInFailure(null)); 
+  }, []);
+
   async function handleOnSubmit(e){
     e.preventDefault()
     try {
@@ -22,7 +27,7 @@ function Signin() {
         return toast.error("Please Fill in the Details")
       }
       dispatch(signInStart())
-      const response = await axios.post('http://localhost:3000/api/auth/signin',{username,password},{withCredentials:true})
+      const response = await axios.post('/api/auth/signin',{username,password},{withCredentials:true})
       if(response.data.success===false){
         dispatch(signInFailure(response.data.message))
         return

@@ -20,7 +20,7 @@ function Home() {
     async function getOfferListings() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/listing/getListings?offer=true&limit=4"
+          "/api/listing/getListings?offer=true&limit=4"
         );
         setOfferListings(response.data);
         getRentListings();
@@ -32,7 +32,7 @@ function Home() {
     async function getSaleListings() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/listing/getListings?type=sale&limit=4"
+          "/api/listing/getListings?type=sale&limit=4"
         );
         setSaleListings(response.data);
       } catch (error) {
@@ -43,7 +43,7 @@ function Home() {
     async function getRentListings() {
       try {
         const res = await axios.get(
-          "http://localhost:3000/api/listing/getListings?type=rent&limit=4"
+          "/api/listing/getListings?type=rent&limit=4"
         );
         setRentListings(res.data);
         getSaleListings();

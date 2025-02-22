@@ -13,7 +13,7 @@ import {Link} from 'react-router-dom'
     useEffect(()=>{
         async function getLandLord(){
             try {
-                const response = await axios.get(`http://localhost:3000/api/user/${landLordId}`,{
+                const response = await axios.get(`/api/user/${landLordId}`,{
                     withCredentials:true
                 })
                 setLandLord(response.data._doc)

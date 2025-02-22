@@ -37,7 +37,7 @@ export default function UpdateListing () {
   useEffect(()=>{
     async function getListingData(){
         const listingId = params.listingId
-        const Data = await axios.get(`http://localhost:3000/api/listing/getListing/${listingId}`)
+        const Data = await axios.get(`/api/listing/getListing/${listingId}`)
         if(Data.data.success == false){
             return toast.error("There is an issue i guess")
         }else{
@@ -122,7 +122,7 @@ export default function UpdateListing () {
       setLoading(true)
     console.log('mada fkr');
     
-      const res = await axios.post(`http://localhost:3000/api/listing/update/${params.listingId}`,{...formData,userRef:user._id},{
+      const res = await axios.post(`/api/listing/update/${params.listingId}`,{...formData,userRef:user._id},{
         withCredentials:true
       })      
       console.log(res);

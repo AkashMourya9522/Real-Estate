@@ -29,7 +29,7 @@ function Profile() {
 
   async function handleSignout() {
     try {
-      const res = await axios.get("http://localhost:3000/api/auth/signout");
+      const res = await axios.get("/api/auth/signout");
       dispatch(signOutSuccess());
     } catch (error) {
       return;
@@ -62,7 +62,7 @@ function Profile() {
     try {
       dispatch(updateUserStart());
       const newUser = await axios.post(
-        "http://localhost:3000/api/user/update/" + _id,
+        "/api/user/update/" + _id,
         formData,
         {
           withCredentials: true,
@@ -83,7 +83,7 @@ function Profile() {
     try {
       dispatch(deleteUserStart());
       const res = await axios.delete(
-        "http://localhost:3000/api/user/delete/" + _id,
+        "/api/user/delete/" + _id,
         {
           withCredentials: true,
         }
@@ -103,7 +103,7 @@ function Profile() {
   async function handleShowListings() {
     try {
       const listings = await axios.get(
-        "http://localhost:3000/api/user/listings/" + _id,
+        "/api/user/listings/" + _id,
         {
           withCredentials: true,
         }
@@ -121,7 +121,7 @@ function Profile() {
 
   async function handleListingDelete(listingId){
     try {
-      const response = await axios.delete(`http://localhost:3000/api/listing/delete/${listingId}`,{
+      const response = await axios.delete(`/api/listing/delete/${listingId}`,{
         withCredentials:true
       })
       if(response.data.success == true){

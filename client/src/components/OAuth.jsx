@@ -17,7 +17,7 @@ export default function OAuth() {
             const auth = getAuth(app)
             const result = await signInWithPopup(auth, provider)
             console.log(result.user);
-            const userData = await axios.post('http://localhost:3000/api/auth/google',{
+            const userData = await axios.post('/api/auth/google',{
                 username:result.user.displayName,
                 email:result.user.email,
                 photoURL:result.user.photoURL

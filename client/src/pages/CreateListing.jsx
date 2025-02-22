@@ -98,7 +98,7 @@ export default function () {
     try {
       if(+formData.discountPrice>=+formData.regularPrice) return setError("Discount Is Greater Than/Equal To Price")
       setLoading(true)
-      const res = await axios.post('http://localhost:3000/api/listing/create',{...formData,userRef:user._id},{
+      const res = await axios.post('/api/listing/create',{...formData,userRef:user._id},{
         withCredentials:true
       })
       console.log(res.data);

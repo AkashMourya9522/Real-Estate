@@ -55,7 +55,7 @@ export default function Search() {
       const getListings = async()=>{
         const URLparams = new URLSearchParams(location.search)
         setLoading(true)
-        const listingsData = await axios.get(`http://localhost:3000/api/listing/getListings?${URLparams.toString()}`)
+        const listingsData = await axios.get(`/api/listing/getListings?${URLparams.toString()}`)
         if(listingsData.data.length>8){
           setShowMore(true)
         }
@@ -88,7 +88,7 @@ export default function Search() {
     const params = new URLSearchParams(location.search)
     params.set("startIndex",startIndex)
     const searchQuery = params.toString()
-    const restListings = await axios.get("http://localhost:3000/api/listing/getListings?"+searchQuery)
+    const restListings = await axios.get("/api/listing/getListings?"+searchQuery)
     if(restListings.data.length < 9){
       setShowMore(false)
     }

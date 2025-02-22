@@ -35,7 +35,7 @@ export default function Listing() {
       try {
         setLoading(true);
         const listingData = await axios.get(
-          `http://localhost:3000/api/listing/getListing/${listingId}`
+          `/api/listing/getListing/${listingId}`
         );
         console.log(listingData.data);
         setLoading(false);
