@@ -103,12 +103,12 @@ export default function () {
       })
       console.log(res.data);
       
-      if(res.data.success ===false){
+      if(res.data.success === false){
         toast.error(res.data.errorMessage)
       setError(res.data.errorMessage)
-      }else{
+      }else if(res.data.success === true){
         toast.success(res.data.name)
-        navigate(`/listing/${res.data.data.userRef}`)
+        navigate(`/listing/${res.data.data._id}`)
       }
       setLoading(false)
     } catch (err) {
@@ -197,6 +197,7 @@ export default function () {
           <div className="flex items-center gap-3">
             <input
             required
+            min={1}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, beds: e.target.value }));
               }}
@@ -207,6 +208,7 @@ export default function () {
             <label htmlFor="">Beds</label>
             <input
             required
+            min={1}
               onChange={(e) => {
                 setFormData((prev) => ({ ...prev, bathrooms: e.target.value }));
               }}
@@ -231,7 +233,9 @@ export default function () {
               min={100}
             />
             <label htmlFor="">Regular Price</label>
-            <span className="text-sm"> ($/month) </span>
+            {
+             ( formData.type === 'rent') && (<span className={`text-sm  `} > ($/month) </span>)
+            }
           </div>
           {formData.offer ? <div   className={` flex gap-3 items-center`}>
             <input
@@ -247,7 +251,9 @@ export default function () {
               min={0}
             />
             <label htmlFor="">Discounted Price</label>
-            <span className="text-sm">($/month)</span>
+            {
+             ( formData.type === 'rent') && (<span className={`text-sm  `} > ($/month) </span>)
+            }
           </div> : "" }
           
         </div>
@@ -256,7 +262,7 @@ export default function () {
             <span className="font-bold mr-2">Images:</span>
             <span>The first image will be the cover (max 6)</span>
           </div>
-          <div className="border-2 p-5 rounded-lg">
+          <div className="border-2 p-5 rounded-lg flex flex-wrap max-w-[450px] items-center gap-4">
             <input
             required
               type="file"
@@ -268,10 +274,10 @@ export default function () {
             />
             <button
               onClick={handleImageUpload}
-              className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase  hover:shadow-md"
+              className="text-green-500 font-semibold border-2 p-3 rounded-lg uppercase w-full sm:w-24  hover:shadow-md"
             >
               {" "}
-              {loading ? "Uploading..." : "Upload"}{" "}
+              {loading ? "Uploading.." : "Upload"}{" "}
             </button>
             {imageUploadError ? <p className="text-red-500" >{imageUploadError}</p> : ""}
           </div>
@@ -281,7 +287,7 @@ export default function () {
           {error ? <p className="text-red-500" >{error}</p> : "" }
           <div>
             {formData.imageURLs.map((imageURL, i) => (
-              <div id={i} className="flex justify-between border-2 p-3 rounded-lg mb-4">
+              <div key={i} className="flex justify-between border-2 p-3 rounded-lg mb-4">
                 <img
                   id={i}
                   className="w-20 h-20 rounded-lg object-contain"

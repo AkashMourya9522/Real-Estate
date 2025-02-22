@@ -25,7 +25,7 @@ function Profile() {
   const inputRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [formData, setFormData] = useState({});
-  const [listing, setListing] = useState(null);
+  const [listing, setListing] = useState([]);
 
   async function handleSignout() {
     try {
@@ -213,13 +213,13 @@ function Profile() {
       <button onClick={handleShowListings} className="text-green-400 uppercase">
         Show Listings
       </button>
-      {listing ? (
+      {listing.length>0 ? (
         <h1 className="text-3xl font-semibold my-7 text-center">
           Your Listings
-        </h1>
-      ) : (
-        ""
-      )}
+        </h1> 
+      ): <h1 className="text-3xl font-semibold my-7 text-center">
+      You Don't Have Any Listing
+    </h1>  }
       {listing && listing.length > 0
         ? listing.map((list, i) => (
             <div
