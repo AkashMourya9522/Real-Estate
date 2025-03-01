@@ -18,6 +18,8 @@ function Profile() {
   const { _id, username, email, photo } = useSelector(
     (state) => state.user.currentUser
   );
+  console.log(photo);
+  
   const { loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -26,6 +28,7 @@ function Profile() {
   const [file, setFile] = useState(undefined);
   const [formData, setFormData] = useState({});
   const [listing, setListing] = useState([]);
+  const [showListings, setShowListings] = useState(false);
 
   async function handleSignout() {
     try {
@@ -61,13 +64,9 @@ function Profile() {
 
     try {
       dispatch(updateUserStart());
-      const newUser = await axios.post(
-        "/api/user/update/" + _id,
-        formData,
-        {
-          withCredentials: true,
-        }
-      );
+      const newUser = await axios.post("/api/user/update/" + _id, formData, {
+        withCredentials: true,
+      });
       console.log("updated user data", newUser);
 
       setFormData(newUser.data);
@@ -82,12 +81,9 @@ function Profile() {
   async function handleDeleteUser() {
     try {
       dispatch(deleteUserStart());
-      const res = await axios.delete(
-        "/api/user/delete/" + _id,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.delete("/api/user/delete/" + _id, {
+        withCredentials: true,
+      });
       if (res.data.success == false) {
         dispatch(deleteUserFailure(res.data.errorMessage));
         return toast.error(res.data.errorMessage);
@@ -101,13 +97,11 @@ function Profile() {
   }
 
   async function handleShowListings() {
+    setShowListings((prev) => !prev);
     try {
-      const listings = await axios.get(
-        "/api/user/listings/" + _id,
-        {
-          withCredentials: true,
-        }
-      );
+      const listings = await axios.get("/api/user/listings/" + _id, {
+        withCredentials: true,
+      });
       if (listings.data.success == false) {
         return toast.error(listings.data.errorMessage);
       }
@@ -119,19 +113,37 @@ function Profile() {
     }
   }
 
-  async function handleListingDelete(listingId){
+  async function handleListingDelete(listingId) {
     try {
-      const response = await axios.delete(`/api/listing/delete/${listingId}`,{
-        withCredentials:true
-      })
-      if(response.data.success == true){
-        toast.success(response.data.message)
-        setListing((prev)=>prev.filter((list)=> list._id != listingId))
+      const response = await axios.delete(`/api/listing/delete/${listingId}`, {
+        withCredentials: true,
+      });
+      if (response.data.success == true) {
+        toast.success(response.data.message);
+        setListing((prev) => prev.filter((list) => list._id != listingId));
       }
     } catch (err) {
-      toast.error(err)
+      toast.error(err);
     }
   }
+
+  const ShowListingsTextComponent = () => {
+    if (showListings) {
+      if (listing.length > 0) {
+        return (
+          <h1 className="text-2xl text-green-500 font-semibold my-7 text-center uppercase">
+            Your Listings
+          </h1>
+        );
+      } else {
+        return (
+          <h1 className="text-2xl text-red-500 font-semibold my-7 text-center uppercase">
+            You Don't Have Any Listings
+          </h1>
+        );
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col gap-5 p-3 max-w-lg mx-auto">
@@ -213,13 +225,15 @@ function Profile() {
       <button onClick={handleShowListings} className="text-green-400 uppercase">
         Show Listings
       </button>
-      {listing.length>0 ? (
+      {/* {listing.length>0 ? (
         <h1 className="text-3xl font-semibold my-7 text-center">
           Your Listings
         </h1> 
       ): <h1 className="text-3xl font-semibold my-7 text-center">
       You Don't Have Any Listing
-    </h1>  }
+    </h1>  } */}
+      <ShowListingsTextComponent />
+
       {listing && listing.length > 0
         ? listing.map((list, i) => (
             <div
@@ -240,15 +254,19 @@ function Profile() {
                 </h1>
               </Link>
               <div className="flex flex-col justify-center items-center">
-                <button onClick={()=>{handleListingDelete(list._id)}} className="text-green-400 uppercase hover:underline">
+                <button
+                  onClick={() => {
+                    handleListingDelete(list._id);
+                  }}
+                  className="text-green-400 uppercase hover:underline"
+                >
                   Delete
                 </button>
-                <Link to={'/update-listing/'+list._id} >
-                <button className="text-red-400 uppercase hover:underline">
-                  Edit
-                </button>
+                <Link to={"/update-listing/" + list._id}>
+                  <button className="text-red-400 uppercase hover:underline">
+                    Edit
+                  </button>
                 </Link>
-                
               </div>
             </div>
           ))
